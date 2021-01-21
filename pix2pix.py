@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
+tf.compat.v1.disable_v2_behavior()
 import numpy as np
 import argparse
 import os
