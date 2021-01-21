@@ -265,12 +265,12 @@ def main():
         edge_pool = multiprocessing.Pool(a.workers)
 
     if a.workers == 1:
-        with tf.Session() as sess:
+        with tf.compat.v1.Session() as sess:
             for src_path, dst_path in zip(src_paths, dst_paths):
                 process(src_path, dst_path)
                 complete()
     else:
-        queue = tf.train.input_producer(zip(src_paths, dst_paths), shuffle=False, num_epochs=1)
+        queue = tf.compat.v1.train.input_producer(zip(src_paths, dst_paths), shuffle=False, num_epochs=1)
         dequeue_op = queue.dequeue()
 
         def worker(coord):
@@ -286,12 +286,12 @@ def main():
                     complete()
 
         # init epoch counter for the queue
-        local_init_op = tf.local_variables_initializer()
-        with tf.Session() as sess:
+        local_init_op = tf.compat.v1.local_variables_initializer()
+        with tf.compat.v1.Session() as sess:
             sess.run(local_init_op)
 
             coord = tf.train.Coordinator()
-            threads = tf.train.start_queue_runners(coord=coord)
+            threads = tf.compat.v1.train.start_queue_runners(coord=coord)
             for i in range(a.workers):
                 t = threading.Thread(target=worker, args=(coord,))
                 t.start()
